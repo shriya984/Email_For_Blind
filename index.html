@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iMails</title>
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #0b0b0b;
+  color: #fff;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- TOP NAVBAR ---------- */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.8);
+  padding: 12px 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+.navbar .logo {
+  font-size: 26px;
+  font-weight: bold;
+  color: #4CAF50;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+.navbar .search-bar {
+  flex: 1;
+  max-width: 450px;
+  margin: 0 30px;
+  padding: 10px 15px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: rgba(255,255,255,0.9);
+  color: #111;
+}
+.navbar .profile-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.profile {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid #4CAF50;
+  background: white url('https://ui-avatars.com/api/?name=User&background=0078d4&color=fff') center/cover no-repeat;
+  cursor: pointer;
+}
+.profile-dropdown {
+  display: none;
+  position: absolute;
+  right: 20px;
+  top: 65px;
+  background: #fff;
+  color: #000;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  padding: 10px 15px;
+  width: 200px;
+  z-index: 999;
+}
+.profile-dropdown.active {
+  display: block;
+}
+
+/* ---------- MAIN LAYOUT ---------- */
+.main-container {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 60px);
+}
+
+/* ---------- SIDEBAR ---------- */
+.sidebar {
+  width: 220px;
+  background: rgba(255,255,255,0.05);
+  padding: 20px 15px;
+  box-sizing: border-box;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.compose-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4CAF50;
+  border: none;
+  color: #fff;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.compose-btn:hover {
+  background: #43a047;
+}
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.menu li {
+  margin: 12px 0;
+}
+.menu li a {
+  text-decoration: none;
+  color: #fff;
+  padding: 8px 12px;
+  display: block;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+.menu li a:hover {
+  background: rgba(255,255,255,0.15);
+  color: #4CAF50;
+}
+
+/* ---------- EMAIL CONTENT ---------- */
+.email-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.email-toolbar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+.email-toolbar button {
+  padding: 8px 14px;
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.email-toolbar button:hover {
+  background: #43a047;
+}
+
+#emailList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#emailList li {
+  background: rgba(255,255,255,0.08);
+  padding: 12px 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+}
+#emailList li:hover {
+  background: rgba(255,255,255,0.15);
+}
+.star {
+  cursor: pointer;
+  font-size: 18px;
+  color: gold;
+  user-select: none;
+}
+
+/* Scrollbar */
+.email-area::-webkit-scrollbar {
+  width: 8px;
+}
+.email-area::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+  border-radius: 8px;
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+  <a href="#" class="logo">iMails</a>
+  <input type="text" class="search-bar" placeholder="Search mail">
+  <div class="profile-container">
+    <div class="profile" id="profileIcon"></div>
+    <div class="profile-dropdown" id="profileDropdown">
+      <p><b>Name:</b> Shriya Jedhe</p>
+      <p><b>Email:</b> shriyajedhe984@gmail.com</p>
+    </div>
+    <div class="profile" id="profileIcon2" style="border-color:#ff5733; background:white url('https://ui-avatars.com/api/?name=User2&background=ff5733&color=fff') center/cover no-repeat;"></div>
+    <div class="profile-dropdown" id="profileDropdown2">
+      <p><b>Name:</b> Another User</p>
+      <p><b>Email:</b> another@example.com</p>
+    </div>
+  </div>
+</div>
+
+<!-- Main Body -->
+<div class="main-container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="compose.html" class="compose-btn">+ Compose</a>
+    <ul class="menu">
+      <li><a href="#" onclick="loadInbox()">📥 Inbox <span id="inboxCount">0</span></a></li>
+      <li><a href="#" onclick="loadSent()">📤 Sent <span id="sentCount">0</span></a></li>
+      <li><a href="#" onclick="loadStarred()">⭐ Starred <span id="starredCount">0</span></a></li>
+     <li><a href="#" onclick="loadSpam()">🛑 Spam <span id="spamCount">0</span></a></li>
+      <li><a href="#">🗑️ Trash</a></li>
+    </ul>
+  </div>
+
+  <!-- Email Area -->
+  <div class="email-area">
+    <div class="email-toolbar">
+      <button onclick="refreshList()">🔄 Refresh</button>
+      <button onclick="deleteSelected()">🗑️ Delete</button>
+    </div>
+    <ul id="emailList"></ul>
+  </div>
+</div>
+
+<script>
+// ---------- PROFILES ----------
+const profileIcon = document.getElementById('profileIcon');
+const profileDropdown = document.getElementById('profileDropdown');
+const profileIcon2 = document.getElementById('profileIcon2');
+const profileDropdown2 = document.getElementById('profileDropdown2');
+let currentUser = 'shriyajedhe984@gmail.com';
+
+profileIcon.addEventListener('click', () => { profileDropdown.classList.toggle('active'); currentUser='shriyajedhe984@gmail.com'; });
+profileIcon2.addEventListener('click', () => { profileDropdown2.classList.toggle('active'); currentUser='another@example.com'; });
+document.addEventListener('click', e => {
+  if(!profileDropdown.contains(e.target) && e.target!==profileIcon) profileDropdown.classList.remove('active');
+  if(!profileDropdown2.contains(e.target) && e.target!==profileIcon2) profileDropdown2.classList.remove('active');
+});
+
+// ---------- EMAIL AREA ----------
+const emailList = document.getElementById('emailList');
+let currentFolder='inbox';
+
+function speak(message, callback=null){
+  const utter = new SpeechSynthesisUtterance(message);
+  utter.lang='en-US';
+  utter.rate=1;
+  speechSynthesis.speak(utter);
+  if(callback) utter.onend = callback;
+}
+
+async function readFolder(folder, url){
+  const res = await fetch(`${url}?user=${currentUser}`);
+  const html = await res.text();
+  emailList.innerHTML = html;
+
+  const mails = emailList.querySelectorAll('li');
+  if(mails.length === 0){ speak(`Your ${folder} folder is empty.`); return; }
+
+  speak(`Opening ${folder}. You have ${mails.length} emails.`);
+
+  let i=0;
+  function readNext(){
+    if(i>=mails.length){ speak(`End of ${folder}.`); return; }
+    const text = mails[i].innerText.replace(/\s+/g,' ');
+    speak(`Email ${i+1}: ${text}`, readNext);
+    i++;
+  }
+  readNext();
+}
+
+async function loadInbox(){ currentFolder='inbox'; readFolder('Inbox','fetch_inbox.php'); } 
+async function loadSent(){ currentFolder='sent'; readFolder('Sent','fetch_sent.php'); } 
+async function loadStarred(){ currentFolder='starred'; readFolder('Starred','fetch_starred.php'); } 
+async function loadSpam(){ currentFolder='draft'; readFolder('Spam','emails.php'); }
+
+
+function refreshList(){ 
+  if(currentFolder==='inbox') loadInbox();
+  else if(currentFolder==='sent') loadSent();
+  else if(currentFolder==='starred') loadStarred();
+  else if(currentFolder==='draft') loadDrafts();
+}
+
+async function deleteSelected(){
+  const selected = document.querySelectorAll('.selectEmail:checked');
+  if(selected.length===0){ speak('Select emails to delete.'); return; }
+  const ids = Array.from(selected).map(cb=>cb.value);
+  await fetch('delete_email.php',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ids, folder:currentFolder, user:currentUser})
+  });
+  speak('Selected emails deleted.');
+  refreshList();
+}
+async function updateAllCounts(){
+  const inboxRes = await fetch(`fetch_inbox.php?user=${currentUser}&countOnly=1`);
+  document.getElementById('inboxCount').textContent = await inboxRes.text();
+
+  const sentRes = await fetch(`fetch_sent.php?user=${currentUser}&countOnly=1`);
+  document.getElementById('sentCount').textContent = await sentRes.text();
+
+  const starredRes = await fetch(`fetch_starred.php?user=${currentUser}&countOnly=1`);
+  document.getElementById('starredCount').textContent = await starredRes.text();
+
+const spamRes = await fetch(`emails.php?user=${currentUser}&countOnly=1`);
+document.getElementById('spamCount').textContent = await spamRes.text(); 
+}
+
+
+setInterval(updateAllCounts, 5000);
+
+// ---------- VOICE COMMAND ----------
+function listenUser(){
+  if(!('webkitSpeechRecognition' in window)){ speak("Voice not supported."); return; }
+
+  speak("Listening. Say Inbox, Sent, Starred, Drafts, or Compose.");
+
+  const recognition = new webkitSpeechRecognition();
+  recognition.lang='en-US';
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  recognition.start();
+
+  recognition.onresult = (event)=>{
+    const cmd = event.results[0][0].transcript.toLowerCase();
+    if(cmd.includes('inbox')) loadInbox();
+    else if(cmd.includes('sent')) loadSent();
+    else if(cmd.includes('starred')) loadStarred();
+    else if(cmd.includes('draft')) loadDrafts();
+    else if(cmd.includes('compose')) {
+      speak("Opening compose window.");
+      window.location.href='compose.html';
+    }
+    else speak("Command not recognized. Say Inbox, Sent, Starred, Drafts, or Compose.");
+  };
+  recognition.onerror = ()=> speak("Voice recognition failed. Try again.");
+}
+
+// ---------- AUTO START ----------
+window.onload = () => {
+  updateAllCounts();
+  speak("Welcome to iMails dashboard. Say Inbox, Sent, Starred, Drafts, or Compose.", listenUser);
+};
+
+
+// ---------- SIDEBAR & COMPOSE HOVER SPEAK ----------
+const sidebarLinks = document.querySelectorAll('.sidebar .menu li a, .compose-btn');
+
+sidebarLinks.forEach(link => {
+  link.addEventListener('mouseover', () => {
+    window.speechSynthesis.cancel();
+
+    // Get text without numbers, emojis, or plus sign
+    let text = link.innerText
+      .replace(/\d+$/, '')              // remove counts
+      .replace(/[\u{1F300}-\u{1F6FF}]/gu,'') // remove emojis
+      .replace(/\+/g,'')                 // remove plus signs
+      .trim();
+
+    speak(text);
+  });
+});
+
+
+// ---------- SEARCH FUNCTIONALITY ----------
+const searchInput = document.querySelector('.search-bar');
+
+searchInput.addEventListener('input', async () => {
+  const query = searchInput.value.trim().toLowerCase();
+  if(!query){
+    refreshList(); // If empty, reload current folder
+    return;
+  }
+
+  // Fetch emails of current folder (same as refreshList)
+  let url;
+  if(currentFolder==='inbox') url='fetch_inbox.php';
+  else if(currentFolder==='sent') url='fetch_sent.php';
+  else if(currentFolder==='starred') url='fetch_starred.php';
+  else if(currentFolder==='draft') url='fetch_drafts.php';
+
+  const res = await fetch(`${url}?user=${currentUser}`);
+  const html = await res.text();
+  emailList.innerHTML = html;
+
+  // Filter emails by search query
+  const emails = Array.from(emailList.querySelectorAll('li'));
+  emails.forEach(email => {
+    if(email.innerText.toLowerCase().includes(query)) email.style.display='flex';
+    else email.style.display='none';
+  });
+});
+
+</script>
+
+</body>
+</html>

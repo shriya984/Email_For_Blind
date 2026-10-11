@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compose Email - iMails</title>
+<style>
+  body {
+    margin:0; padding:0; font-family: Arial, sans-serif;
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background: #f2e6dc;
+  }
+  .overlay {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.7); color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:1.2em; cursor:pointer; z-index:1000; text-align:center; padding:20px;
+  }
+  .container {
+    display:flex; background:#fff; border-radius:10px; box-shadow:0 2px 12px rgba(0,0,0,0.1);
+    max-width:900px; width:90%; min-height:450px;
+  }
+  .form-section {
+    flex:1; padding:30px; display:flex; flex-direction:column; justify-content:center;
+  }
+  .info-section {
+    flex:1; background:#b49c8e; color:#fff; padding:30px;
+    display:flex; flex-direction:column; justify-content:center; font-size:1.1em; line-height:1.5;
+    border-radius:0 10px 10px 0;
+  }
+  h2 { margin-bottom:20px; font-size:1.8em; color:#2e2e2e; }
+  form { display:flex; flex-direction:column; gap:15px; }
+  label { display:flex; flex-direction:column; font-weight:bold; color:#222; }
+  input, textarea { padding:10px; border-radius:5px; border:1px solid #bbb; font-size:1em; width:100%; }
+  textarea { resize:none; }
+  .input-group { display:flex; align-items:center; gap:5px; width:100%; }
+  .mic-btn { background:#b49c8e; color:#fff; border:none; border-radius:3px; width:32px; height:32px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-size:1em; }
+  .mic-btn:hover { background:#967d6c; }
+  button[type="submit"] { padding:12px 0; background:#b49c8e; color:#fff; border:none; border-radius:5px;
+    font-size:1.1em; font-weight:bold; cursor:pointer; margin-top:10px; }
+  button[type="submit"]:hover { background:#967d6c; }
+  #voice-status { margin-top:10px; color:#b49c8e; font-size:1em; }
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay">
+  Click anywhere to enable voice guidance for composing email.<br>
+  Press the microphone for each field and start speaking.
+</div>
+
+<div class="container">
+
+  <!-- Left: Compose Form -->
+  <div class="form-section">
+    <h2>Compose Email</h2>
+    <form id="composeForm" method="post" action="send_email.php" enctype="multipart/form-data">
+      <label for="to">To:
+        <div class="input-group">
+          <input type="email" id="to" name="to" placeholder="Recipient email" required>
+        </div>
+      </label>
+
+      <label for="subject">Subject:
+        <div class="input-group">
+          <input type="text" id="subject" name="subject" placeholder="Subject" required>
+        </div>
+      </label>
+
+      <label for="message">Message:
+        <div class="input-group">
+          <textarea id="message" name="message" rows="6" placeholder="Type your message" required></textarea>
+        </div>
+      </label>
+
+      <label for="attachment">Attachment (optional):
+        <input type="file" id="attachment" name="attachment">
+      </label>
+
+      <button type="submit">Send Email</button>
+      <div id="voice-status"></div>
+    </form>
+  </div>
+
+  <!-- Right: Info Section -->
+  <div class="info-section">
+    <h2>Voice Guided Email</h2>
+    <p>Use the microphone buttons to fill recipient, subject, and message fields by voice.</p>
+    <p>Once all fields are filled, you can say "Send email" to submit the form.</p>
+    <p>Stay connected and send emails effortlessly with voice commands!</p>
+  </div>
+</div>
+
+<script>
+// ---------- SPEAK FUNCTION ----------
+function speak(text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  speechSynthesis.speak(utterance);
+}
+
+// ---------- CLEAN INPUT ----------
+function cleanInput(text, fieldId){
+  if(fieldId === 'to'){
+    return text.replace(/[^\w\d@._-]/g,''); 
+  } else if(fieldId === 'subject' || fieldId === 'message'){
+    return text.replace(/[^\w\d\s.,!?@#&()_-]/g,''); 
+  } else {
+    return text;
+  }
+}
+
+// ---------- START RECOGNITION ----------
+function startRecognition(fieldId, triggerSend=false){
+  const input = document.getElementById(fieldId);
+  speak("Listening for " + fieldId + ". Please start speaking now.");
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition){ speak("Voice recognition not supported on this browser."); return; }
+
+  const recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = "en-IN";
+
+  recognition.start();
+
+  recognition.onresult = function(event){
+    let transcript = event.results[0][0].transcript.trim();
+    transcript = cleanInput(transcript, fieldId);
+    input.value = transcript;
+    speak(fieldId + " set to " + transcript);
+
+    if(triggerSend) promptSendVoice(); // trigger voice submit
+  };
+
+  recognition.onerror = function(event){
+    speak("Error " + event.error + ". Please try again.");
+  };
+}
+
+// ---------- PROMPT SEND EMAIL ----------
+function promptSendVoice(){
+  speak("All fields filled. Say 'Send email' to submit the form.");
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = "en-IN";
+
+  recognition.start();
+
+  recognition.onresult = function(event){
+    let command = event.results[0][0].transcript.trim().toLowerCase();
+    if(command.includes("send email") || command.includes("send")){
+      document.getElementById("composeForm").submit();
+      speak("Email sent successfully!");
+    } else {
+      speak("Did not recognize. Please say 'Send email' to submit.");
+      promptSendVoice(); // retry
+    }
+  };
+
+  recognition.onerror = function(){
+    speak("Error. Please say 'Send email' to submit.");
+    promptSendVoice(); // retry
+  };
+}
+// ---------- START RECOGNITION ----------
+function startRecognition(fieldId, triggerSend=false){
+  const input = document.getElementById(fieldId);
+  speak("Listening for " + fieldId + ". Please start speaking now.");
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition){ speak("Voice recognition not supported on this browser."); return; }
+
+  const recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = true; // <-- allow interim results so text shows as you speak
+  recognition.lang = "en-IN";
+
+  recognition.start();
+
+  recognition.onresult = function(event){
+    let transcript = '';
+    for(let i=event.resultIndex; i<event.results.length; ++i){
+      transcript += event.results[i][0].transcript;
+    }
+    transcript = cleanInput(transcript, fieldId);
+    input.value = transcript; // <-- display spoken text inside input/textarea immediately
+  };
+
+  recognition.onend = function(){
+    let finalText = input.value.trim();
+    if(finalText){
+      speak(fieldId + " set to " + finalText);
+      if(triggerSend) promptSendVoice(); // trigger voice submit after message
+    } else {
+      speak("No speech detected. Please press the microphone and speak again.");
+    }
+  };
+
+  recognition.onerror = function(event){
+    speak("Error " + event.error + ". Please try again.");
+  };
+}
+
+// ---------- OVERLAY CLICK ----------
+document.getElementById('overlay').addEventListener('click', function(){
+  speak("Welcome! Click the microphone buttons for each field and start speaking. For email include @ and .");
+  this.style.display = 'none';
+});
+
+// ---------- ADD MICROPHONE BUTTONS ----------
+window.onload = () => {
+  speak("Compose page opened. Please fill recipient, subject, and message. Then press send email button.");
+
+  const fields = ['to','subject','message'];
+  fields.forEach(id=>{
+    const field = document.getElementById(id);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'mic-btn';
+    btn.innerText = '🎤';
+    btn.onclick = ()=>startRecognition(id, id==='message'); // trigger voice submit after message
+    field.parentNode.insertBefore(btn, field.nextSibling);
+  });
+};
+</script>
+
+</body>
+</html>

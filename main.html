@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Email System for Blind People</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2e6dc;
+      color: #2e2e2e;
+    }
+
+    header {
+      background-color: #f8eee8;
+      padding: 10px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #b49c8e;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 30px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    main {
+      padding: 40px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fff3ea;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-text {
+      flex: 1;
+      padding-right: 30px;
+    }
+
+    .hero-text h1 {
+      font-size: 32px;
+    }
+
+    .hero-text p {
+      margin: 20px 0;
+      color: #555;
+    }
+
+    .hero-text .info-box {
+      background-color: #e7d6cb;
+      padding: 15px;
+      border-radius: 5px;
+      color: #333;
+    }
+
+    .hero-img img {
+      width: 220px;
+      height: auto;
+    }
+
+    .section-title {
+      text-align: center;
+      margin: 60px 0 30px 0;
+      font-size: 26px;
+      font-weight: bold;
+      color: #2e2e2e;
+    }
+
+    .features {
+      display: flex;
+      justify-content: space-around;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .feature {
+      background-color: #fff;
+      padding: 20px;
+      width: 30%;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .feature img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 15px;
+    }
+
+    .feature h3 {
+      margin-bottom: 10px;
+      color: #3b3b3b;
+    }
+
+    .feature p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .feature .info-box {
+      background-color: #f6eee9;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      font-size: 13px;
+      color: #444;
+    }
+
+    .steps {
+      display: flex;
+      justify-content: space-around;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .step {
+      width: 28%;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .step h4 {
+      margin-bottom: 10px;
+    }
+
+    .about,
+    .team,
+    .contact,
+    .signup {
+      background: #fff3ea;
+      padding: 30px;
+      border-radius: 10px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .about p,
+    .contact p,
+    .signup p {
+      color: #555;
+    }
+
+    .team-members {
+      display: flex;
+      justify-content: space-around;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .member {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 28%;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .member img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    button {
+      background-color: #b49c8e;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #967d6c;
+    }
+
+    footer {
+      text-align: center;
+      background: #f8eee8;
+      padding: 15px;
+      border-top: 2px solid #b49c8e;
+      font-size: 14px;
+      color: #444;
+    }
+
+    @media (max-width: 800px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-text {
+        padding-right: 0;
+      }
+
+      .feature,
+      .step,
+      .member {
+        width: 80%;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">IMail</div>
+    <nav>  
+      <ul>
+        <li><a href="signup.html">SIGN UP</a></li>
+        <li><a href="login.html">LOGIN</a></li>
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="#about">ABOUT US</a></li>
+        <li><a href="#contact">CONTACTS</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>EMAIL SYSTEM FOR BLIND PEOPLE</h1>
+        <p>
+          A speech-based email system designed for visually impaired users to
+          send, receive, and manage emails using only voice commands.
+        </p>
+        <div id="extra-info" class="info-box" style="display: none">
+          🔊 Built with speech recognition & text-to-speech, BlindMail allows
+          users to compose, read, and delete emails fully through voice without
+          keyboard or mouse.
+        </div>
+        <button id="readMoreBtn">Read More</button>
+      </div>
+      <div class="hero-img">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/2784/2784486.png"
+          alt="Email Icon"
+        />
+      </div>
+    </section>
+
+    <!-- Features -->
+    <h2 class="section-title">Our Features</h2>
+    <section class="features">
+      <div class="feature">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/1546/1546606.png"
+          alt="Voice Feedback Icon"
+        />
+        <h3>VOICE FEEDBACK</h3>
+        <p>System gives audio response after each action to guide the user.</p>
+        <div class="info-box">
+          Helps blind users understand what's happening on screen without seeing
+          it.
+        </div>
+      </div>
+
+      <div class="feature">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/4201/4201973.png"
+          alt="Speech Recognition"
+        />
+        <h3>SPEECH COMMANDS</h3>
+        <p>Control everything with voice: reading, composing, deleting emails.</p>
+        <div class="info-box">
+          Just say “Read inbox” or “Compose email” and let the system do the
+          rest.
+        </div>
+      </div>
+
+      <div class="feature">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/2917/2917995.png"
+          alt="Accessibility"
+        />
+        <h3>ACCESSIBILITY FIRST</h3>
+        <p>Designed specially with visually impaired users in mind.</p>
+        <div class="info-box">
+          Big buttons, minimal visuals, full audio guidance — no screen reader
+          needed!
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <h2 class="section-title">How It Works</h2>
+    <section class="steps">
+      <div class="step">
+        <h4>1. Speak</h4>
+        <p>User gives command: "Compose Email" or "Read Inbox".</p>
+      </div>
+      <div class="step">
+        <h4>2. AI Processes</h4>
+        <p>Speech-to-Text converts voice into email actions.</p>
+      </div>
+      <div class="step">
+        <h4>3. System Responds</h4>
+        <p>Text-to-Speech reads out inbox and confirms actions.</p>
+      </div>
+    </section>
+
+    <!-- About -->
+    <h2 class="section-title" id="about">About Us</h2>
+    <section class="about">
+      <p>
+        BlindMail is developed to empower visually impaired individuals with a
+        fully accessible email system. Our mission is to remove digital
+        communication barriers by providing speech-based technology for
+        independent emailing.
+      </p>
+    </section>
+
+    <!-- Team -->
+    <h2 class="section-title" id="team">Our Team</h2>
+    <section class="team">
+      <div class="team-members">
+        <div class="member">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            alt="Member"
+          />
+          <h4>Shriya</h4>
+          <p>Developer</p>
+        </div>
+        <div class="member">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            alt="Member"
+          />
+          <h4>Snehal</h4>
+          <p>Developer</p>
+        </div>
+        <div class="member">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            alt="Member"
+          />
+          <h4>Shravani</h4>
+          <p>Researcher</p>
+        </div>
+        <div class="member">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            alt="Member"
+          />
+          <h4>Aditi</h4>
+          <p>Researcher</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <h2 class="section-title" id="contact">Contact Us</h2>
+    <section class="contact">
+      <p>Email: support@blindmail.com</p>
+      <p>Phone: +91 123456789</p>
+      <p>Address: Mumbai, Maharashtra, India</p>
+    </section>
+
+   
+    </section>
+  </main>
+
+  <footer>
+    © 2024 BlindMail. All rights reserved. Made with ❤️ for accessibility.
+  </footer>
+  <button onclick="window.location.href='signup.html'">Sign Up</button>
+
+
+  <script>
+    document.getElementById("readMoreBtn").addEventListener("click", function () {
+      const extraInfo = document.getElementById("extra-info");
+      if (extraInfo.style.display === "none") {
+        extraInfo.style.display = "block";
+        this.textContent = "Read Less";
+      } else {
+        extraInfo.style.display = "none";
+        this.textContent = "Read More";
+      }
+    });
+
+  </script>
+  <!-- Speech Script -->
+  <script>
+    window.onload = function() {
+      let msg = new SpeechSynthesisUtterance("Welcome to iMails. Click on SignUp if you already have account please clik login.");
+      msg.rate = 0.5; // speed
+      msg.pitch = 1; // voice tone
+      window.speechSynthesis.speak(msg);
+    }
+  </script>
+</body>
+</html>
+
+
+
+

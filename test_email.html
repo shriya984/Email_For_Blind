@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Test Send Email</title>
+</head>
+<body>
+<h2>Test Compose Form</h2>
+<form id="composeForm" action="send_email.php" method="POST" enctype="multipart/form-data">
+  <label>To:</label>
+  <input type="email" name="to" required><br><br>
+  <label>Subject:</label>
+  <input type="text" name="subject" required><br><br>
+  <label>Message:</label>
+  <textarea name="message" required></textarea><br><br>
+  <label>Attachment:</label>
+  <input type="file" name="attachment"><br><br>
+  <input type="hidden" name="sender" value="shriyajedhe984@gmail.com">
+  <button type="submit">Send</button>
+</form>
+</body>
+</html>

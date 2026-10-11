@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iMails - Inbox</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      background: #f6f8fc;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 230px;
+      background: white;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #0284c7;
+      margin: 10px;
+      text-align: center;
+    }
+
+    .sidebar button {
+      background: none;
+      border: none;
+      padding: 12px;
+      text-align: left;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      margin: 3px 0;
+    }
+
+    .sidebar button:hover, .active {
+      background: #e5f3ff;
+    }
+
+    /* Main Area */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 10px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .search-bar input {
+      padding: 8px;
+      width: 300px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    .profile {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .profile img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+    }
+
+    /* Profile dropdown */
+    .profile-info {
+      position: absolute;
+      top: 45px;
+      right: 0;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      padding: 10px;
+      display: none;
+      width: 200px;
+    }
+
+    .profile-info p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    /* Layout: Mail List + Mail View */
+    .content-area {
+      display: flex;
+      flex: 1;
+      margin: 10px;
+      gap: 10px;
+    }
+
+    /* Mail List */
+    .mail-list {
+      flex: 1;
+      overflow-y: auto;
+      background: white;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .mail-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .mail-item:hover {
+      background: #f2f8ff;
+    }
+
+    /* Mail Details */
+    .mail-details {
+      flex: 2;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      display: none;
+      flex-direction: column;
+    }
+
+    .mail-details h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .mail-details p {
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    .back-btn {
+      margin-bottom: 10px;
+      cursor: pointer;
+      color: #0284c7;
+      background: none;
+      border: none;
+      font-size: 14px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">iMails</div>
+    <button class="active" onclick="loadInbox()">📥 Inbox</button>
+    <button onclick="loadSent()">📤 Sent</button>
+    <button onclick="alert('Drafts Coming Soon')">📝 Drafts</button>
+  </div>
+
+  <!-- Main Area -->
+  <div class="main">
+    <!-- Header -->
+    <div class="header">
+      <div class="search-bar">
+        <input type="text" placeholder="Search mail...">
+      </div>
+      <div class="profile" onclick="toggleProfile()">
+        <img src="https://via.placeholder.com/35" alt="Profile">
+        <div class="profile-info" id="profileInfo">
+          <p><strong>User:</strong> Shriya Jedhe</p>
+          <p><strong>Email:</strong> shriyajedhe984@gmail.com</p>
+          <p><a href="signup.html">Logout</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mail List + Mail View -->
+    <div class="content-area">
+      <div class="mail-list" id="mailList"></div>
+
+      <div class="mail-details" id="mailDetails">
+        <button class="back-btn" onclick="goBack()">⬅ Back to mails</button>
+        <h2 id="mailSubject"></h2>
+        <p><strong>From:</strong> <span id="mailFrom"></span></p>
+        <p><strong>Time:</strong> <span id="mailTime"></span></p>
+        <hr>
+        <p id="mailBody"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const mails = {
+      inbox: [
+        { from: "Bhagyashri Patil", subject: "New Announcement: Lab Info", time: "12:34 PM", body: "Hello everyone, please check the new lab schedule in the portal." },
+        { from: "Priyanka Sherkha", subject: "New Assignment: Exp. 8", time: "12:20 PM", body: "Dear Students, experiment 8 has been uploaded. Please submit by next Monday." },
+        { from: "Snehal Chavan", subject: "OLAP Theory Notes", time: "Sep 24", body: "Sharing the OLAP notes for revision. Kindly prepare for the upcoming test." }
+      ],
+      sent: [
+        { from: "Me", subject: "Project Submission", time: "Sep 21", body: "Respected Sir, I have submitted the final project report as instructed." },
+        { from: "Me", subject: "Feedback on PPT", time: "Sep 20", body: "Please provide your feedback on my PPT so that I can improve before final review." }
+      ]
+    };
+
+    function loadInbox() {
+      document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
+      document.querySelector(".sidebar button:nth-child(2)").classList.add("active");
+      renderMails(mails.inbox);
+    }
+
+    function loadSent() {
+      document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
+      document.querySelector(".sidebar button:nth-child(3)").classList.add("active");
+      renderMails(mails.sent);
+    }
+
+    function renderMails(mailArray) {
+      const mailList = document.getElementById("mailList");
+      const mailDetails = document.getElementById("mailDetails");
+      mailDetails.style.display = "none";
+      mailList.innerHTML = "";
+
+      mailArray.forEach((mail, index) => {
+        const div = document.createElement("div");
+        div.className = "mail-item";
+        div.innerHTML = `<span><b>${mail.from}</b> - ${mail.subject}</span><span>${mail.time}</span>`;
+        div.onclick = () => openMail(mail);
+        mailList.appendChild(div);
+      });
+    }
+
+    function openMail(mail) {
+      document.getElementById("mailSubject").innerText = mail.subject;
+      document.getElementById("mailFrom").innerText = mail.from;
+      document.getElementById("mailTime").innerText = mail.time;
+      document.getElementById("mailBody").innerText = mail.body;
+      document.getElementById("mailDetails").style.display = "flex";
+    }
+
+    function goBack() {
+      document.getElementById("mailDetails").style.display = "none";
+    }
+
+    function toggleProfile() {
+      document.getElementById("profileInfo").style.display =
+        document.getElementById("profileInfo").style.display === "block" ? "none" : "block";
+    }
+
+    // Load inbox by default
+    loadInbox();
+  </script>
+</body>
+</html>
